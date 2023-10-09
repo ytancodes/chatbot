@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* Reset default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body styles */
+        body {
+            height: 100vh;
+            background: #001219;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Header styles */
+        header {
+            font-family: Helvetica, sans-serif;
+            font-size: 24px;
+            text-align: center;
+            color: white;
+        }
+
+        /* Login form styles */
+        form {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            margin-top: 20px; /* Add margin to move the form below the greeting */
+        }
+
+        label {
+            font-size: 16px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        input[type="submit"] {
+            background: #fca311;
+            color: #001219;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Animated circles styles */
+        .circle {
+            position: absolute;
+            bottom: 0;
+            width: 20px;
+            aspect-ratio: 1/1;
+            background: #fca311;
+            box-shadow: 0 0 10px #ff5400, 0 0 20px #ff5400, 0 0 30px #ff5400, 0 0 50px #ff5400;
+            border-radius: 50%;
+            animation: animate 5s linear forwards;
+        }
+
+        @keyframes animate {
+            0% {
+                transform: translateY(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh);
+                opacity: 1;
+            }
+        }
+
+        .circle::before {
+            content: "";
+            position: absolute;
+            bottom: 100%;
+            left: 25%;
+            width: 50%;
+            height: 100vh;
+            opacity: 0.5;
+            background: linear-gradient(#ff5400, transparent);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to SONI</h1>
+    </header>
+    <form>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        
+        <input type="submit" value="Sign In">
+    </form>
+
+    <script>
+        function createAnimatedCircles() {
+            let sizeW = Math.random() * 22;
+            let duration = Math.random() * 3;
+            let e = document.createElement("div");
+            e.setAttribute("class", "circle");
+            document.body.appendChild(e);
+            e.style.width = 12 + sizeW + "px";
+            e.style.left = Math.random() * window.innerWidth + "px";
+            e.style.animationDuration = 2 + duration + "s";
+            setTimeout(function () {
+                document.body.removeChild(e);
+            }, 5000);
+        }
+
+        setInterval(createAnimatedCircles, 200);
+    </script>
+</body>
+</html>
