@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        header {
+            background-color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        main {
+            background-color: #fff;
+            padding: 20px;
+            max-width: 300px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            padding: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        input[type="submit"] {
+            padding: 8px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .error-message {
+            color: #f44336;
+            margin: 5px 0;
+            text-align: center;
+        }
+
+        .signup-link {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .signup-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Welcome Shopper! Please login with existing account or signup.</h1>
+    </header>
+
+    <main>
+        <form action="#" method="post" onsubmit="return validateForm()">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <div class="error-message" id="usernameError"></div>
+            <br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <div class="error-message" id="passwordError"></div>
+            <br>
+            <input type="submit" value="Login">
+        </form>
+        <div class="signup-link">
+			Don't have an account? <a href="signup.html">Sign up</a>
+		</div>
+
+    </main>
+
+    <script>
+        function validateForm() {
+            const usernameInput = document.getElementById("username");
+            const passwordInput = document.getElementById("password");
+            const usernameErrorDiv = document.getElementById("usernameError");
+            const passwordErrorDiv = document.getElementById("passwordError");
+
+            // Regular expression to check if the username contains only alphabetical characters
+            const usernameRegex = /^[A-Za-z]+$/;
+
+            if (!usernameRegex.test(usernameInput.value)) {
+                usernameErrorDiv.textContent = "Username must contain only alphabetical characters";
+                return false;
+            } else {
+                usernameErrorDiv.textContent = "";
+            }
+
+            if (passwordInput.value.length < 8) {
+                passwordErrorDiv.textContent = "Password must be at least 8 characters long";
+                return false;
+            } else {
+                passwordErrorDiv.textContent = "";
+            }
+
+            return true; // Form will be submitted if no validation errors
+        }
+    </script>
+</body>
+
+</html>
