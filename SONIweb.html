@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            font-size: 24px;
+        }
+        #chat-container {
+            margin-top: 20px;
+        }
+        #user-input {
+            font-size: 16px;
+            padding: 5px;
+            width: 70%;
+        }
+        #chat-button, #teach-button, #toggle-button, #export-button, #import-button {
+            font-size: 16px;
+            padding: 5px 10px;
+        }
+        #chat-log {
+            border: 1px solid #ccc;
+            padding: 10px;
+            min-height: 200px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        #question-box, #answer-box {
+            font-size: 16px;
+            padding: 5px;
+            width: 70%;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chatbot (Tokens Learned: <span id="token-count">0</span>)</h1>
+
+    <div id="chat-container">
+        <div id="chat-log"></div>
+        <input type="text" id="user-input" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+        <div id="question-box">
+            <input type="text" id="question-input" placeholder="Enter question...">
+        </div>
+        <div id="answer-box">
+            <input type="text" id="answer-input" placeholder="Enter answer...">
+        </div>
+        <button id="chat-button" onclick="chat()" disabled>Chat</button>
+        <button id="teach-button" onclick="toggleTeachMode()">Teach</button>
+        <button id="toggle-button" onclick="toggleMode()">Toggle</button>
+        <button id="export-button" onclick="exportTokens()">Export Tokens</button>
+        <input type="file" id="import-file" style="display: none;" accept=".txt" onchange="importTokens()">
+        <label for="import-file" id="import-label">Import Tokens</label>
+    </div>
+
+    <script>
+        let teachMode = true;
+        let knowledge = {};
+        let tokenCount = 0;
+
+        function toggleMode() {
+            teachMode = !teachMode;
+            document.getElementById("chat-button").disabled = teachMode;
+            document.getElementById("teach-button").disabled = !teachMode;
+            document.getElementById("toggle-button").textContent = teachMode ? "Toggle to Chat" : "Toggle to Teach";
+            document.getElementById("question-box").style.display = teachMode ? "block" : "none";
+            document.getElementById("answer-box").style.display = teachMode ? "block" : "none";
+            document.getElementById("question-input").value = ""; // Clear question input
+            document.getElementById("answer-input").value = ""; // Clear answer input
+        }
+
+        function toggleTeachMode() {
+            teachMode = true;
+            document.getElementById("question-box").style.display = "block";
+            document.getElementById("answer-box").style.display = "block";
+            document.getElementById("question-input").value = ""; // Clear question input
+            document.getElementById("answer-input").value = ""; // Clear answer input
+            document.getElementById("user-input").focus();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                if (teachMode) {
+                    teach();
+                } else {
+                    chat();
+                }
+            }
+        }
+
+        function chat() {
+            const userInput = document.getElementById("user-input").value;
+            // Add your chat function logic here
+            // Update the chat log accordingly
+            const chatLog = document.getElementById("chat-log");
+            chatLog.innerHTML += `User: ${userInput}<br>`;
+            document.getElementById("user-input").value = "";
+        }
+
+        function teach() {
+            const question = document.getElementById("question-input").value;
+            const answer = document.getElementById("answer-input").value;
+            // Add your teach function logic here
+            // Update the chat log accordingly
+            const chatLog = document.getElementById("chat-log");
+            chatLog.innerHTML += `Teaching: ${question} => ${answer}<br>`;
+            document.getElementById("question-input").value = ""; // Clear question input
+            document.getElementById("answer-input").value = ""; // Clear answer input
+            // Increment token count
+            tokenCount++;
+            document.getElementById("token-count").textContent = tokenCount;
+        }
+
+        function exportTokens() {
+            const tokens = [];
+            for (const question in knowledge) {
+                tokens.push(`Question: ${question}\nAnswer: ${knowledge[question]}`);
+            }
+            const tokenText = tokens.join("\n\n");
+            const blob = new Blob([tokenText], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "exported_tokens.txt";
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importTokens() {
+            const fileInput = document.getElementById("import-file");
+            const file = fileInput.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const tokenText = event.target.result;
+                const tokens = tokenText.split("\n\n");
+                tokens.forEach(token => {
+                    const lines = token.split("\n");
+                    if (lines.length >= 2 && lines[0].startsWith("Question:") && lines[1].startsWith("Answer:")) {
+                        const question = lines[0].replace("Question:", "").trim();
+                        const answer = lines[1].replace("Answer:", "").trim();
+                        knowledge[question] = answer;
+                    }
+                });
+                tokenCount = Object.keys(knowledge).length;
+                document.getElementById("token-count").textContent = tokenCount;
+            };
+            reader.readAsText(file);
+        }
+    </script>
+</body>
+</html>
